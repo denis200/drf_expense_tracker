@@ -14,9 +14,9 @@ class ExpenseCategory(models.Model):
 
 class ExpenseDetail(models.Model):
     title = models.CharField(max_length=100)
-    quantity = models.PositiveIntegerField(default=1)
+    quantity = models.PositiveIntegerField(default=1) 
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    expense = models.ForeignKey("Expense",on_delete=models.CASCADE)
+    expense = models.ForeignKey("Expense",on_delete=models.CASCADE,related_name='expense_detail',null = True)
 
     def __str__(self):
         return f"{self.title} | {self.expense}"
@@ -35,3 +35,6 @@ class Expense(models.Model):
 
     class Meta:
         ordering = ['date']
+
+    def get_expense_details(self):
+        return self.expense_detail.all()
