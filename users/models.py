@@ -40,6 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     user_name = models.CharField(max_length=150, unique=True)
     first_name = models.CharField(max_length=150, blank=True)
     start_date = models.DateTimeField(default=timezone.now)
+    money = models.DecimalField(max_digits=10, decimal_places=2,null = True,default = 0)
     about = models.TextField(_(
         'about'), max_length=500, blank=True)
     is_staff = models.BooleanField(default=False)

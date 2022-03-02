@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from .models import Expense, ExpenseCategory, ExpenseDetail
 from rest_framework import generics
+from rest_framework import mixins
 from .serializers import CategorySerializer, ExpenseDetailSerializer, ExpenseSerializer
 from rest_framework.permissions import IsAuthenticated
 
@@ -27,7 +28,7 @@ class ExpenseDetailView(APIView):
         return Response({'Success':ExpenseDetailSerializer(saved_data).data})
 
 
-class ExpenseCategoryView(generics.ListCreateAPIView):
+class ExpenseCategoryView(generics.ListCreateAPIView, mixins.UpdateModelMixin):
     queryset = ExpenseCategory.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
