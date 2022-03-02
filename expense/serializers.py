@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from.models import Expense, ExpenseDetail
+from.models import Expense, ExpenseCategory, ExpenseDetail
 
 
 class ExpenseDetailSerializer(serializers.ModelSerializer):
@@ -9,6 +9,12 @@ class ExpenseDetailSerializer(serializers.ModelSerializer):
         model = ExpenseDetail
         fields = '__all__'
         
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ExpenseCategory
+        fields = "__all__"
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
