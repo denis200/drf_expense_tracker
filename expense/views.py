@@ -1,8 +1,12 @@
 from rest_framework.response import Response
 from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework import status
+import json
+from expense.utils import get_products_by_code, set_session_id
 from .models import Expense, ExpenseCategory, ExpenseDetail
 from rest_framework import generics
+from rest_framework.decorators import api_view
 from rest_framework import mixins
 from .serializers import CategorySerializer, ExpenseDetailSerializer, ExpenseSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -32,3 +36,21 @@ class ExpenseCategoryView(generics.ListCreateAPIView, mixins.UpdateModelMixin):
     queryset = ExpenseCategory.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
+
+
+@api_view(['POST'])
+def set_session(request):
+    if request.method == 'POST':
+        set_session_id(request.POST.get('phone'))
+        return Response({"success":"ok"},status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def get_products(request):
+    if request.method == 'POST':
+        phone =str(request.POST.get('phone'))
+        qr =str(request.POST.get('qr'))
+        code =str(request.POST.get('code'))
+        response = get_products_by_code(phone,code,qr)
+        return Response({"success":response},status=status.HTTP_200_OK)
+

@@ -8,13 +8,6 @@ class ExpenseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExpenseDetail
         fields = '__all__'
-        
-
-class CategorySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = ExpenseCategory
-        fields = "__all__"
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
@@ -22,5 +15,17 @@ class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expense
         fields = '__all__'
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    expense = Expense.objects.all()
+    class Meta:
+        model = ExpenseCategory
+        fields = "__all__"
+
+
+
+
+    
 
 
