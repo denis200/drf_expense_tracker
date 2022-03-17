@@ -51,6 +51,13 @@ def get_products(request):
         phone =str(request.POST.get('phone'))
         qr =str(request.POST.get('qr'))
         code =str(request.POST.get('code'))
+        expense_id = int(request.POST.get('expense_id'))
         response = get_products_by_code(phone,code,qr)
-        return Response({"success":response},status=status.HTTP_200_OK)
+        items = response['ticket']['document']['receipt']['items']
+        for i in items:
+            i['expense'] = expense_id
+        seriazizer = ExpenseDetailSerializer(data = items,many = True)
+        seriazizer.is_valid(raise_exception=True)
+        saved_data = seriazizer.save()
+        return Response({"items":'ok'},status=status.HTTP_200_OK)
 

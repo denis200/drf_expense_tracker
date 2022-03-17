@@ -31,7 +31,7 @@ class Expense(models.Model):
 
     def __str__(self):
         formated_date = self.date.strftime( "%d/%m/%y %H:%M")
-        return f"{formated_date} {self.user.user_name}"
+        return f"id={self.pk} {self.user.user_name} {formated_date}"
 
     class Meta:
         ordering = ['date']

@@ -1,13 +1,14 @@
 
+from django.forms import CharField
 from rest_framework import serializers
 from.models import Expense, ExpenseCategory, ExpenseDetail
 
 
 class ExpenseDetailSerializer(serializers.ModelSerializer):
-
+    name = serializers.CharField(source = 'title',max_length=255)
     class Meta:
         model = ExpenseDetail
-        fields = '__all__'
+        fields = ['name','quantity','price','expense']
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
