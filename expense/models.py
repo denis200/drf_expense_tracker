@@ -30,8 +30,8 @@ class Expense(models.Model):
     note = models.CharField(max_length=250,blank=True)
 
     def __str__(self):
-        formated_date = self.date.strftime( "%d/%m/%y %H:%M")
-        return f"id={self.pk} {self.user.user_name} {formated_date}"
+        formated_date = self.date.strftime( "%d.%m.%y %H:%M")
+        return f"id {self.pk} {self.user.user_name} {formated_date}"
 
     class Meta:
         ordering = ['date']

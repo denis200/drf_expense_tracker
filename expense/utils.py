@@ -12,6 +12,7 @@ headers = {
         'User-Agent': 'billchecker/2.9.0 (iPhone; iOS 13.6; Scale/2.00)',
     }
 
+
 def set_session_id(phone) -> None:
     phone = phone
     url = f'https://irkkt-mobile.nalog.ru:8888/v2/auth/phone/request'
@@ -23,11 +24,13 @@ def set_session_id(phone) -> None:
     response = requests.post(url, json=payload, headers=headers)
     return response
 
+
 def get_ticket_id( qr: str) -> str:
     url = f'https://irkkt-mobile.nalog.ru:8888/v2/ticket'
     payload = {'qr': qr}
     resp = requests.post(url, json=payload, headers=headers)
     return resp.json()["id"]
+
 
 def get_ticket( qr: str) -> dict:
     ticket_id = get_ticket_id(qr)
@@ -35,6 +38,7 @@ def get_ticket( qr: str) -> dict:
     url = f'https://irkkt-mobile.nalog.ru:8888/v2/tickets/{ticket_id}'
     resp = requests.get(url, headers=headers)
     return resp.json()
+
 
 def get_products_by_code(phone,code,qr):
     url = 'https://irkkt-mobile.nalog.ru:8888/v2/auth/phone/verify'
@@ -50,3 +54,19 @@ def get_products_by_code(phone,code,qr):
     headers['sessionId'] =  __session_id
     ticket = get_ticket(qr)
     return ticket
+
+
+def convert_sum(price:str):
+    return float(price[:-2] + '.' + price[-2:])
+
+
+def get_receipt(request):
+    if request.method == 'POST':
+        phone =str(request.POST.get('phone'))
+        qr =str(request.POST.get('qr'))
+        code =str(request.POST.get('code'))
+        response = get_products_by_code(phone,code,qr)
+        receipt = response['ticket']['document']['receipt']
+        for item in receipt['items']: item['title'] = item.pop('name')
+        for item in receipt['items']: item['price'] = convert_sum(str(item['price']))
+        return receipt

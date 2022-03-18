@@ -5,17 +5,25 @@ from.models import Expense, ExpenseCategory, ExpenseDetail
 
 
 class ExpenseDetailSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source = 'title',max_length=255)
     class Meta:
         model = ExpenseDetail
-        fields = ['name','quantity','price','expense']
+        fields = ['title','quantity','price','expense']
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
-    expense_detail= ExpenseDetailSerializer(many = True)
+    expense_detail= ExpenseDetailSerializer( many = True)
     class Meta:
         model = Expense
         fields = '__all__'
+
+    def create(self, validated_data):
+        expense_data = validated_data.pop('expense_detail')
+        ser = ExpenseDetailSerializer(data = expense_data,many = True)
+        ser.is_valid(raise_exception=True)
+        expense = Expense.objects.create(**validated_data)
+        for detail_data in expense_data:
+            ExpenseDetail.objects.create( **detail_data,expense = expense)
+        return expense
 
 
 class CategorySerializer(serializers.ModelSerializer):
